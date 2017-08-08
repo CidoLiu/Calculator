@@ -3,10 +3,10 @@
  * 功能描述：
  * 1.只能支持两位double数做四则运算
  * 2.无法判断算术优先级
- *
+ * <p>
  * 待解决问题：
- * 1.支持多个操作数的连续运算
- * 2.能判断算术优先级
+ * 1.支持多个操作数的连续运算---已解决2017/8/9 jin
+ * 2.能判断算术优先级---已解决2017/8/9 jin
  * 3.按下等号输出结果后能继续运算
  * 4运算结果小数部分为0时不显示
  */
@@ -22,7 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //文本框
     TextView mTextView;
@@ -50,34 +50,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button mButtonNumber0;
     Button mButtonDot;
 
-    private static String text="";
-    private static String operator="";
+    private static String text = "";
+    private static String operator = "";
+    private boolean leftBacket = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextView=(TextView)findViewById(R.id.text);
-        mButtonClear=(Button)findViewById(R.id.button_clear);
-        mButtonBacket=(Button)findViewById(R.id.button_backet);
-        mButtonBackspace=(Button)findViewById(R.id.button_backspace);
-        mButtonDiv=(Button)findViewById(R.id.button_div);
-        mButtonMul=(Button)findViewById(R.id.button_mul);
-        mButtonSub=(Button)findViewById(R.id.button_sub);
-        mButtonAdd=(Button)findViewById(R.id.button_add);
-        mButtonEqual=(Button)findViewById(R.id.button_equal);
-        mButtonNumber1=(Button)findViewById(R.id.button_number1);
-        mButtonNumber2=(Button)findViewById(R.id.button_number2);
-        mButtonNumber3=(Button)findViewById(R.id.button_number3);
-        mButtonNumber4=(Button)findViewById(R.id.button_number4);
-        mButtonNumber5=(Button)findViewById(R.id.button_number5);
-        mButtonNumber6=(Button)findViewById(R.id.button_number6);
-        mButtonNumber7=(Button)findViewById(R.id.button_number7);
-        mButtonNumber8=(Button)findViewById(R.id.button_number8);
-        mButtonNumber9=(Button)findViewById(R.id.button_number9);
-        mButtonNumber0=(Button)findViewById(R.id.button_number0);
-        mButtonDot=(Button)findViewById(R.id.button_dot);
+        mTextView = (TextView) findViewById(R.id.text);
+        mButtonClear = (Button) findViewById(R.id.button_clear);
+        mButtonBacket = (Button) findViewById(R.id.button_backet);
+        mButtonBackspace = (Button) findViewById(R.id.button_backspace);
+        mButtonDiv = (Button) findViewById(R.id.button_div);
+        mButtonMul = (Button) findViewById(R.id.button_mul);
+        mButtonSub = (Button) findViewById(R.id.button_sub);
+        mButtonAdd = (Button) findViewById(R.id.button_add);
+        mButtonEqual = (Button) findViewById(R.id.button_equal);
+        mButtonNumber1 = (Button) findViewById(R.id.button_number1);
+        mButtonNumber2 = (Button) findViewById(R.id.button_number2);
+        mButtonNumber3 = (Button) findViewById(R.id.button_number3);
+        mButtonNumber4 = (Button) findViewById(R.id.button_number4);
+        mButtonNumber5 = (Button) findViewById(R.id.button_number5);
+        mButtonNumber6 = (Button) findViewById(R.id.button_number6);
+        mButtonNumber7 = (Button) findViewById(R.id.button_number7);
+        mButtonNumber8 = (Button) findViewById(R.id.button_number8);
+        mButtonNumber9 = (Button) findViewById(R.id.button_number9);
+        mButtonNumber0 = (Button) findViewById(R.id.button_number0);
+        mButtonDot = (Button) findViewById(R.id.button_dot);
 
         mButtonClear.setOnClickListener(this);
         mButtonBacket.setOnClickListener(this);
@@ -103,69 +104,90 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * 响应点击事件
+     *
      * @param v
      */
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.button_number0:
-                text+='0';
+                text += '0';
                 break;
             case R.id.button_number1:
-                text+='1';
+                text += '1';
                 break;
             case R.id.button_number2:
-                text+='2';
+                text += '2';
                 break;
             case R.id.button_number3:
-                text+='3';
+                text += '3';
                 break;
             case R.id.button_number4:
-                text+='4';
+                text += '4';
                 break;
             case R.id.button_number5:
-                text+='5';
+                text += '5';
                 break;
             case R.id.button_number6:
-                text+='6';
+                text += '6';
                 break;
             case R.id.button_number7:
-                text+='7';
+                text += '7';
                 break;
             case R.id.button_number8:
-                text+='8';
+                text += '8';
                 break;
             case R.id.button_number9:
-                text+='9';
+                text += '9';
                 break;
             case R.id.button_dot:
-                text+='.';
+                text += '.';
                 break;
             case R.id.button_clear:
-                text="";
+                text = "";
+                leftBacket=false;
                 break;
             case R.id.button_add:
-                text+='+';
-                operator="+";
+                text += '+';
                 break;
             case R.id.button_sub:
-                text+='－';
-                operator="－";
+                text += '－';
                 break;
             case R.id.button_mul:
-                text+='×';
-                operator="×";
+                text += '×';
                 break;
             case R.id.button_div:
-                text+='÷';
-                operator="÷";
+                text += '÷';
+                break;
+            case R.id.button_backet:
+                if (text == "") {
+                    text += '(';
+                    leftBacket = true;
+                } else {
+                    if (isWhat(text.charAt(text.length() - 1)) == "leftbacket" ||
+                            isWhat(text.charAt(text.length() - 1)) == "operation") {
+                        text += '(';
+                        leftBacket = true;
+                    } else if (isWhat(text.charAt(text.length() - 1)) == "rightbacket") {
+                        text += "×(";
+                        leftBacket = true;
+                    } else if (isWhat(text.charAt(text.length() - 1)) == "number" && leftBacket) {
+                        text += ')';
+                    } else if (isWhat(text.charAt(text.length() - 1)) == "number" && !leftBacket) {
+                        text += "×(";
+                        leftBacket = true;
+                    }
+                }
                 break;
             case R.id.button_backspace:
-                text=text.substring(0,text.length()-1);
+                if (text.length()>0){
+                    text = text.substring(0, text.length() - 1);
+                }
                 break;
             case R.id.button_equal:
-                text+='=';
-                text+=getAnswer();
+                String answer = getAnswer();
+                text += '=';
+                text += answer;
                 break;
             default:
                 break;
@@ -173,51 +195,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTextView.setText(text);
     }
 
+    String isWhat(char c) {
+        switch (c) {
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                return "number";
+            case '+':
+            case '-':
+            case '×':
+            case '÷':
+                return "operation";
+            case '(':
+                return "leftbacket";
+            case ')':
+                return "rightbacket";
+            default:
+                return "nodefind";
+        }
+    }
+
     /**
      * 计算表达式函数
+     *
      * @return运算结果
      */
-    public String getAnswer(){
-        double answer=0;//运算结果
-        String answerString="";
-        String TAG ="MainActivityTest";
-
-        int operaterIndex=text.indexOf(operator);//运算符位置
-        Log.d(TAG, "operaterIndex: "+operaterIndex);
-        int equalIndex=text.indexOf('=');//等号位置
-        Log.d(TAG, "equalIndex: "+equalIndex);
-
-        if (operaterIndex==0||equalIndex==operaterIndex+1){//缺少操作数
-            Toast.makeText(MainActivity.this,"Errot Input!!!",Toast.LENGTH_SHORT).show();
-            return "error";
-        }
-
-        //截取出操作数
-        double number1=Double.parseDouble(text.substring(0,operaterIndex));//强制类型转换，string转double
-        Log.d(TAG, "number1: "+number1);
-        double number2=Double.parseDouble(text.substring(operaterIndex+1,equalIndex));
-        Log.d(TAG, "number2: "+number2);
-
-        //做运算
-        switch (operator){
-            case "+":
-                answer=number1+number2;
-                break;
-            case "－":
-                answer=number1-number2;
-                break;
-            case "×":
-                answer=number1*number2;
-                break;
-            case "÷":
-                answer=number1/number2;
-                break;
-            default:
-                break;
-        }
-        answerString=String.valueOf(answer);//强制类型转换，double转string
-        Log.d(TAG, "answer: "+answer);
-
+    public String getAnswer() {
+        String TAG = "MainActivity";
+        Log.d(TAG, "getAnswer: text:" + text);
+        String postfix = InfixToPostfix.infixToPostfix(text);
+        Log.d(TAG, "getAnswer: postfix:" + postfix);
+        String answerString = String.valueOf(InfixToPostfix.evaluate(postfix));
+        Log.d(TAG, "getAnswer: answer:" + answerString);
         return answerString;
     }
 }
