@@ -1,5 +1,5 @@
 /**
- * 最后更新与2017/7/7
+ * 最后更新于2017/7/7
  * 功能描述：
  * 1.只能支持两位double数做四则运算
  * 2.无法判断算术优先级
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 text += '+';
                 break;
             case R.id.button_sub:
-                text += '－';
+                text += '-';
                 break;
             case R.id.button_mul:
                 text += '×';
